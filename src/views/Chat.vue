@@ -1,11 +1,9 @@
 <template>
-$END$
+123
 </template>
 
-<script>
-export default {
-name: "Chat"
-}
+<script setup lang="ts">
+
 </script>
 
 <style scoped>
