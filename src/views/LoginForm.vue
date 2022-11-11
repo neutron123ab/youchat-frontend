@@ -36,6 +36,7 @@ import axios from "axios";
 import {JSEncrypt} from "jsencrypt";
 import {useTokenStore} from "@/stores/token";
 import router from "@/router";
+import {useUserStore} from "@/stores/user";
 
 const show = ref(false)
 const checkPass = ref('')
@@ -95,6 +96,9 @@ function login() {
   }).then(function (res) {
     const store = useTokenStore()
     store.storeJwt(res.data.data)
+
+    const userStore = useUserStore()
+    userStore.storeUserInfo(null, formData.username)
     router.push('/chat')
   })
 }

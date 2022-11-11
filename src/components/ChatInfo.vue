@@ -2,7 +2,7 @@
 
   <div class="chatInfoContainer">
     <el-scrollbar height="400px">
-      <p v-for="item in 20" :key="item" class="scrollbar-demo-item">{{ item }}</p>
+      <p v-for="item in chatInfoStore.chatInfo" :key="item" class="scrollbar-demo-item">{{ item }}</p>
     </el-scrollbar>
     <SendMsgBox/>
   </div>
@@ -12,6 +12,11 @@
 <script setup lang="ts">
 
 import SendMsgBox from "@/components/SendMsgBox.vue";
+import {useChatInfo} from "@/stores/chatInfo";
+
+const chatInfoStore = useChatInfo()
+
+
 </script>
 
 <style scoped>

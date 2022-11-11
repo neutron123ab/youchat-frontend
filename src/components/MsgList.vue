@@ -3,7 +3,21 @@
   <div class="listContainer">
     <div class="title">消息列表</div>
     <el-scrollbar height="600px" class="itemContainer">
-      <p v-for="item in 20" :key="item" class="scrollbar-demo-item">{{ item }}</p>
+      <el-button v-for="item in msgList" :key="item" @click="setChatInfo(item)" class="scrollbar-demo-item">
+
+        <div v-if="item[0].hasOwnProperty('userFriendsId')">
+          <div v-if="item[0]['userId'] === userStore.userId">{{item[0]['friendsName']}}</div>
+          <div v-else-if="item[0]['friendsId'] === userStore.userId">{{item[0]['userName']}}</div>
+          <div>{{item[0]['sendTime']}}</div>
+          <div>{{item[0]['content']}}</div>
+        </div>
+        <div v-else-if="item[0].hasOwnProperty('userGroupId')">
+          <div v-if="item[0]['userId'] === userStore.userId">群聊：{{item[0]['groupName']}}</div>
+          <div>{{item[0]['sendTime']}}</div>
+          <div>{{item[0]['content']}}</div>
+        </div>
+
+      </el-button>
     </el-scrollbar>
   </div>
 
@@ -12,16 +26,29 @@
 <script setup lang="ts">
 
 import {reactive} from "vue";
+import {storeToRefs} from "pinia";
+import {useMsgList} from "@/stores/msgList";
+import {useUserStore} from "@/stores/user";
+import {useChatInfo} from "@/stores/chatInfo";
 
+const msgListStore = useMsgList()
 //消息列表
-const msgLists = reactive([])
+const {msgList} = storeToRefs(msgListStore)
+
+const userStore = useUserStore()
+
+function setChatInfo(item: any) {
+  const store = useChatInfo()
+  store.storeChatInfo(item)
+}
+
 
 </script>
 
 <style scoped>
 
 .listContainer {
-  width: 300px;
+  width: 185px;
   height: 700px;
   background-color: #f2f3f4;
   text-align: center;
@@ -31,7 +58,7 @@ const msgLists = reactive([])
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
+  height: 100px;
   margin: 10px;
   text-align: center;
   border-radius: 4px;
