@@ -2,17 +2,18 @@
 
   <div class="listContainer">
     <div class="title">消息列表</div>
+    <div class="title" style="color: red">当前用户：{{userStore.username}}</div>
     <el-scrollbar height="600px" class="itemContainer">
       <el-button v-for="item in msgList" :key="item" @click="setChatInfo(item)" class="scrollbar-demo-item">
 
         <div v-if="item[0].hasOwnProperty('userFriendsId')">
           <div v-if="item[0]['userId'] === userStore.userId">{{item[0]['friendsName']}}</div>
-          <div v-else-if="item[0]['friendsId'] === userStore.userId">{{item[0]['userName']}}</div>
+          <div v-else-if="item[0]['friendsId'] === userStore.userId">{{item[0]['username']}}</div>
           <div>{{item[0]['sendTime']}}</div>
           <div>{{item[0]['content']}}</div>
         </div>
         <div v-else-if="item[0].hasOwnProperty('userGroupId')">
-          <div v-if="item[0]['userId'] === userStore.userId">群聊：{{item[0]['groupName']}}</div>
+          <div>群聊：{{item[0]['groupName']}}</div>
           <div>{{item[0]['sendTime']}}</div>
           <div>{{item[0]['content']}}</div>
         </div>

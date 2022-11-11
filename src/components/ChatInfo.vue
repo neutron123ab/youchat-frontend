@@ -2,7 +2,16 @@
 
   <div class="chatInfoContainer">
     <el-scrollbar height="400px">
-      <p v-for="item in chatInfoStore.chatInfo" :key="item" class="scrollbar-demo-item">{{ item }}</p>
+      <div v-for="item in chatInfoStore.chatInfo" :key="item" class="scrollbar-demo-item">
+        <div v-if="item.userId === userStore.userId">
+          <div class="self1">{{item.username}}</div>
+          <div class="self">{{item.content}}&nbsp;&nbsp;&nbsp;</div>
+        </div>
+        <div v-else-if="item.userId !== userStore.userId">
+          <div class="others1">{{item.username}}&nbsp;&nbsp;&nbsp;</div>
+          <div class="others">{{item.content}}</div>
+        </div>
+      </div>
     </el-scrollbar>
     <SendMsgBox/>
   </div>
@@ -13,8 +22,11 @@
 
 import SendMsgBox from "@/components/SendMsgBox.vue";
 import {useChatInfo} from "@/stores/chatInfo";
+import {useUserStore} from "@/stores/user";
 
 const chatInfoStore = useChatInfo()
+
+const userStore = useUserStore()
 
 
 </script>
@@ -28,15 +40,40 @@ const chatInfoStore = useChatInfo()
 }
 
 .scrollbar-demo-item {
-  display: flex;
+  /*display: flex;*/
   align-items: center;
-  justify-content: center;
+  /*justify-content: center;*/
+  line-height: 50px;
   height: 50px;
   margin: 10px;
-  text-align: center;
+  /*text-align: center;*/
   border-radius: 4px;
   background: var(--el-color-primary-light-9);
   color: var(--el-color-primary);
+}
+
+.self {
+  float: right;
+  /*margin-right: 10px;*/
+}
+
+.self1 {
+  float: right;
+  margin-right: 10px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.others {
+  float: left;
+  /*margin-left: 10px;*/
+}
+
+.others1 {
+  float: left;
+  margin-left: 10px;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 </style>
