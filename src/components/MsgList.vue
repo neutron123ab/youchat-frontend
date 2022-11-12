@@ -30,12 +30,17 @@ import {storeToRefs} from "pinia";
 import {useMsgList} from "@/stores/msgList";
 import {useUserStore} from "@/stores/user";
 import {useChatInfo} from "@/stores/chatInfo";
+import {watch} from "vue";
 
 const msgListStore = useMsgList()
 //消息列表
 const {msgList} = storeToRefs(msgListStore)
 
 const userStore = useUserStore()
+
+watch(msgList, ()=>{
+
+})
 
 function setChatInfo(item: any) {
   const store = useChatInfo()

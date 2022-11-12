@@ -21,6 +21,11 @@ export const useChatInfo = defineStore('chatInfo', ()=>{
         }
     }
 
+    function addChatInfo(newVal:any){
+        // @ts-ignore
+        chatInfo.push(newVal)
+    }
+
     //清除消息记录
     function clearChatInfo(){
         let len = chatInfo.length
@@ -30,5 +35,15 @@ export const useChatInfo = defineStore('chatInfo', ()=>{
         amount.value = 0
     }
 
-    return { chatInfo, amount, storeChatInfo, clearChatInfo }
+    //获取群组id(用户好友id或群聊id)
+    function chatId(){
+        // @ts-ignore
+        if(chatInfo[0].hasOwnProperty('userFriendsId')){
+            console.log(chatInfo[0]['userFriendsId'])
+            return 's' + chatInfo[0]['userFriendsId']
+        }
+        return 'g' + chatInfo[0]['userGroupId']
+    }
+
+    return { chatInfo, amount, storeChatInfo, clearChatInfo, chatId, addChatInfo }
 })

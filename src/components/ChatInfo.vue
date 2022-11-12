@@ -2,7 +2,7 @@
 
   <div class="chatInfoContainer">
     <el-scrollbar height="400px" ref="scrollRef">
-      <div v-for="item in chatInfoStore.chatInfo" :key="item" class="scrollbar-demo-item">
+      <div v-for="item in chatInfo" :key="item" class="scrollbar-demo-item">
         <div v-if="item.userId === userStore.userId">
           <div class="self1">{{ item.username }}</div>
           <div class="self">{{ item.content }}&nbsp;&nbsp;&nbsp;</div>
@@ -25,6 +25,7 @@ import {useChatInfo} from "@/stores/chatInfo";
 import {useUserStore} from "@/stores/user";
 import {ref, watch} from "vue";
 import {storeToRefs} from "pinia";
+import {useReceivedMsgStore} from "@/stores/receivedMsg";
 
 const chatInfoStore = useChatInfo()
 const {chatInfo, amount} = storeToRefs(chatInfoStore)
@@ -32,6 +33,8 @@ const {chatInfo, amount} = storeToRefs(chatInfoStore)
 const userStore = useUserStore()
 
 const scrollRef = ref()
+
+const receivedMsgStore = useReceivedMsgStore()
 
 watch(chatInfo.value, () => {
   if (scrollRef.value) {

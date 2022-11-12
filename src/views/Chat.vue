@@ -11,13 +11,22 @@
 
 import MsgList from "@/components/MsgList.vue";
 import ChatInfo from "@/components/ChatInfo.vue";
-import {onBeforeMount} from "vue";
+import {onBeforeMount, reactive, watch} from "vue";
 import axios from "axios";
 import {useMsgList} from "@/stores/msgList";
 import {useUserStore} from "@/stores/user";
+import {useWebsocketStore} from "@/stores/websocketStore";
+import {useReceivedMsgStore} from "@/stores/receivedMsg";
+import {storeToRefs} from "pinia";
 
+const receivedMsgStore = useReceivedMsgStore()
+const {receivedMsg} = storeToRefs(receivedMsgStore)
 const msgListStore = useMsgList()
 onBeforeMount(connectWebSocket)
+
+watch(receivedMsg, ()=>{
+  getMessage()
+})
 
 function connectWebSocket() {
 
@@ -33,12 +42,15 @@ function connectWebSocket() {
       webSocket.onmessage = function (ev) {
         //服务器回送消息格式，index 0：userId; 1：username; 2：msg
         //let msg = ev.data.toString().split('-')
-        console.log(ev.data+"========")
+        console.log('收到消息：' + ev.data)
+        receivedMsgStore.storeMsg(ev.data)
       }
 
       //感知连接开启
       webSocket.onopen = function () {
         console.log('websocket连接已开启')
+        const websocketStore = useWebsocketStore()
+        websocketStore.storeWebsocket(webSocket)
         getMessage()
       }
 
@@ -68,28 +80,54 @@ function connectWebSocket() {
 }
 
 //获取消息列表的数据
-function getMessage(){
-  console.log('123123123')
+function getMessage() {
   msgListStore.clearMsgList()
-  console.log('123123123')
-  axios.request({
-    method: 'GET',
-    url: '/singleChat/getChatMsg',
-    params: {
-      userFriendsId: 1
-    }
-  }).then(function (res){
-    msgListStore.storeMsgList(res.data.data)
-  })
+  const userStore = useUserStore()
+  let list = reactive([])
+  let groupList = reactive([])
 
   axios.request({
     method: 'GET',
-    url: '/groupChat/getGroupChatMsg',
+    url: '/friends',
     params: {
-      userGroupId: 1
+      userId: userStore.userId
     }
   }).then(function (res) {
-    msgListStore.storeMsgList(res.data.data)
+    list = res.data.data
+
+    let len = list.length
+    for (let i = 0; i < len; i++) {
+      axios.request({
+        method: 'GET',
+        url: '/singleChat/getChatMsg',
+        params: {
+          userFriendsId: list[i]['id']
+        }
+      }).then(function (res) {
+        msgListStore.storeMsgList(res.data.data)
+      })
+    }
+    axios.request({
+      method: 'GET',
+      url: '/group',
+      params: {
+        userId: userStore.userId
+      }
+    }).then(function (res) {
+      groupList = res.data.data
+      let len = groupList.length
+      for (let j = 0; j < len; j++) {
+        axios.request({
+          method: 'GET',
+          url: '/groupChat/getGroupChatMsg',
+          params: {
+            userGroupId: groupList[j]['id'] //TODO
+          }
+        }).then(function (res) {
+          msgListStore.storeMsgList(res.data.data)
+        })
+      }
+    })
   })
 }
 

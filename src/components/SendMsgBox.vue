@@ -6,11 +6,9 @@
               type="textarea"
               placeholder="请输入内容"
               resize="none"
-              class="sel"
-              style="outline: none"
-              @change="change">
+              class="sel">
     </el-input>
-    <el-button class="sendBtn">发送</el-button>
+    <el-button class="sendBtn" @click="onSend">发送</el-button>
   </div>
 
 
@@ -18,19 +16,38 @@
 
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
+import {useWebsocketStore} from "@/stores/websocketStore";
+import {storeToRefs} from "pinia";
+import {useChatInfo} from "@/stores/chatInfo";
 
 const input = ref()
+const chatInfoStore = useChatInfo()
+const websocketStore = useWebsocketStore()
+const {state, websocket} = storeToRefs(websocketStore)
+const start = ref(false)
 
-function change(){
-  input.value = ''
+watch(state, (newVal) => {
+  start.value = newVal === true;
+})
+
+
+function onSend() {
+  if (start.value === true) {
+    if (websocket.value!.readyState === WebSocket.OPEN) {
+      let msg = chatInfoStore.chatId() + '-' + input.value
+      websocket.value!.send(msg)
+
+      input.value = ''
+    }
+  }
 }
 
 </script>
 
 <style scoped>
 
-.sendMsgBox{
+.sendMsgBox {
   position: relative;
   width: 600px;
   height: 250px;
