@@ -8,11 +8,7 @@ export const useMsgList = defineStore('msgList', ()=>{
 
         // @ts-ignore
         msgList.push(newVal)
-        // let len = newVal.length
-        // for (let i = 0; i < len; i++) {
-        //     // @ts-ignore
-        //     msgList.push(newVal.pop())
-        // }
+
         //@ts-ignore
         msgList.sort(function (a, b)
         {

@@ -26,7 +26,6 @@
 
 <script setup lang="ts">
 
-import {reactive} from "vue";
 import {storeToRefs} from "pinia";
 import {useMsgList} from "@/stores/msgList";
 import {useUserStore} from "@/stores/user";

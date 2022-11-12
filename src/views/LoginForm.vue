@@ -37,6 +37,8 @@ import {JSEncrypt} from "jsencrypt";
 import {useTokenStore} from "@/stores/token";
 import router from "@/router";
 import {useUserStore} from "@/stores/user";
+import {useChatInfo} from "@/stores/chatInfo";
+import {useMsgList} from "@/stores/msgList";
 
 const show = ref(false)
 const checkPass = ref('')
@@ -99,6 +101,10 @@ function login() {
 
     const userStore = useUserStore()
     userStore.storeUserInfo(null, formData.username)
+    const chatInfoStore = useChatInfo()
+    chatInfoStore.clearChatInfo()
+    const msgListStore = useMsgList()
+    msgListStore.clearMsgList()
     router.push('/chat')
   })
 }

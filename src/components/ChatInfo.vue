@@ -1,15 +1,15 @@
 <template>
 
   <div class="chatInfoContainer">
-    <el-scrollbar height="400px">
+    <el-scrollbar height="400px" ref="scrollRef">
       <div v-for="item in chatInfoStore.chatInfo" :key="item" class="scrollbar-demo-item">
         <div v-if="item.userId === userStore.userId">
-          <div class="self1">{{item.username}}</div>
-          <div class="self">{{item.content}}&nbsp;&nbsp;&nbsp;</div>
+          <div class="self1">{{ item.username }}</div>
+          <div class="self">{{ item.content }}&nbsp;&nbsp;&nbsp;</div>
         </div>
         <div v-else-if="item.userId !== userStore.userId">
-          <div class="others1">{{item.username}}&nbsp;&nbsp;&nbsp;</div>
-          <div class="others">{{item.content}}</div>
+          <div class="others1">{{ item.username }}&nbsp;&nbsp;&nbsp;</div>
+          <div class="others">{{ item.content }}</div>
         </div>
       </div>
     </el-scrollbar>
@@ -23,10 +23,22 @@
 import SendMsgBox from "@/components/SendMsgBox.vue";
 import {useChatInfo} from "@/stores/chatInfo";
 import {useUserStore} from "@/stores/user";
+import {ref, watch} from "vue";
+import {storeToRefs} from "pinia";
 
 const chatInfoStore = useChatInfo()
+const {chatInfo, amount} = storeToRefs(chatInfoStore)
 
 const userStore = useUserStore()
+
+const scrollRef = ref()
+
+watch(chatInfo.value, () => {
+  if (scrollRef.value) {
+    let h = 70 * amount.value
+    scrollRef.value.setScrollTop(h)
+  }
+}, {deep: true, flush: "post"})
 
 
 </script>

@@ -11,17 +11,12 @@
 
 import MsgList from "@/components/MsgList.vue";
 import ChatInfo from "@/components/ChatInfo.vue";
-import {onBeforeMount, reactive} from "vue";
+import {onBeforeMount} from "vue";
 import axios from "axios";
 import {useMsgList} from "@/stores/msgList";
-//import {storeToRefs} from "pinia";
-import {useTokenStore} from "@/stores/token";
 import {useUserStore} from "@/stores/user";
 
-const demo = reactive([{1:'1',2:'2'}, [{1:'1', 2:'3'},{3:'4',4:'5'}]])
-
 const msgListStore = useMsgList()
-//const {msgList} = storeToRefs(msgListStore)
 onBeforeMount(connectWebSocket)
 
 function connectWebSocket() {
@@ -45,9 +40,6 @@ function connectWebSocket() {
       webSocket.onopen = function () {
         console.log('websocket连接已开启')
         getMessage()
-        // console.log('-----------')
-        // console.log(msgListStore.msgList)
-        // console.log('-----------')
       }
 
       //感知连接关闭
@@ -87,9 +79,7 @@ function getMessage(){
       userFriendsId: 1
     }
   }).then(function (res){
-    console.log("storeMsg")
     msgListStore.storeMsgList(res.data.data)
-    console.log(res.data.data)
   })
 
   axios.request({
@@ -99,9 +89,7 @@ function getMessage(){
       userGroupId: 1
     }
   }).then(function (res) {
-    console.log("storeMsg")
     msgListStore.storeMsgList(res.data.data)
-    console.log(res.data.data)
   })
 }
 
